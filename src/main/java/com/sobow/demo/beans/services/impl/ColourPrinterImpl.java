@@ -4,7 +4,9 @@ import com.sobow.demo.beans.services.BluePrinter;
 import com.sobow.demo.beans.services.ColourPrinter;
 import com.sobow.demo.beans.services.GreenPrinter;
 import com.sobow.demo.beans.services.RedPrinter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ColourPrinterImpl implements ColourPrinter {
     
     private RedPrinter redPrinter;
