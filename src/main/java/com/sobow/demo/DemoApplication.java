@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 @SpringBootApplication
 @Slf4j
 public class DemoApplication implements CommandLineRunner {
+    
     private DataSource dataSource;
     
     public DemoApplication(DataSource dataSource) {
@@ -22,7 +23,6 @@ public class DemoApplication implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        
         log.info("DataSource: " + dataSource.toString());
         final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.execute("select 1");
