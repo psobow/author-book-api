@@ -1,22 +1,19 @@
 package com.sobow.demo;
 
-import com.sobow.demo.beans.services.ColourPrinter;
-import com.sobow.demo.pizza.PizzaConfig;
+import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootApplication
 @Slf4j
 public class DemoApplication implements CommandLineRunner {
+    private DataSource dataSource;
     
-    private ColourPrinter colourPrinter;
-    private PizzaConfig pizzaConfig;
-    
-    public DemoApplication(ColourPrinter colourPrinter, PizzaConfig pizzaConfig) {
-        this.colourPrinter = colourPrinter;
-        this.pizzaConfig = pizzaConfig;
+    public DemoApplication(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
     
     public static void main(String[] args) {
@@ -25,12 +22,9 @@ public class DemoApplication implements CommandLineRunner {
     
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("-".repeat(20));
-        log.info(colourPrinter.print());
-        System.out.println("-".repeat(20));
-        log.info(String.format("I want a %s crust pizza, with %s and %s sauce.",
-                               pizzaConfig.getCrust(),
-                               pizzaConfig.getTopping(),
-                               pizzaConfig.getSauce()));
+        
+        log.info("DataSource: " + dataSource.toString());
+        final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.execute("select 1");
     }
 }
