@@ -1,5 +1,8 @@
 package com.sobow.demo.dao;
 
-public interface AuthorDao {
+import com.sobow.demo.domain.Author;
 
+public interface AuthorDao {
+    
+    void create(Author author);
 }
