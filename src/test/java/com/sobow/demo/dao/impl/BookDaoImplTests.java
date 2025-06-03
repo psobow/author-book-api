@@ -1,9 +1,10 @@
-package com.sobow.demo.dao;
+package com.sobow.demo.dao.impl;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import com.sobow.demo.dao.impl.BookDaoImpl;
+import com.sobow.demo.dao.impl.BookDaoImpl.BookRowMapper;
 import com.sobow.demo.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,5 +39,14 @@ public class BookDaoImplTests {
             eq("Witcher"),
             eq(1L)
         );
+    }
+    
+    @Test
+    public void testThatFindOneGeneratesCorrectSql() {
+        underTest.findOne("978-1");
+        verify(jdbcTemplate).query(
+            eq("SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1"),
+            any(BookRowMapper.class),
+            eq("978-1"));
     }
 }

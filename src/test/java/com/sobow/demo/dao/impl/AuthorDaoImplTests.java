@@ -1,9 +1,10 @@
-package com.sobow.demo.dao;
+package com.sobow.demo.dao.impl;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
-import com.sobow.demo.dao.impl.AuthorDaoImpl;
+import com.sobow.demo.dao.impl.AuthorDaoImpl.AuthorRowMapper;
 import com.sobow.demo.domain.Author;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -45,5 +46,16 @@ public class AuthorDaoImplTests {
             eq("Steve"),
             eq(80)
         );
+    }
+    
+    @Test
+    public void testThatFindOneGeneratesCorrectSql() {
+        
+        underTest.findOne(1L);
+        
+        verify(jdbcTemplate).query(
+            eq("SELECT id, name, age FROM authors WHERE id = ? LIMIT 1"),
+            any(AuthorRowMapper.class),
+            eq(1L));
     }
 }
