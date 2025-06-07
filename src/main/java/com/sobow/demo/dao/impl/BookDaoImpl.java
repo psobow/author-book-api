@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BookDaoImpl implements BookDao {
     
     private JdbcTemplate jdbcTemplate;
@@ -32,7 +34,8 @@ public class BookDaoImpl implements BookDao {
         List<Book> results = jdbcTemplate.query(
             "SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1",
             new BookRowMapper(),
-            isbn);
+            isbn
+        );
         return results.stream()
                       .findFirst();
     }

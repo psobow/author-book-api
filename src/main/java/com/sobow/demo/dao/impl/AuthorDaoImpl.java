@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AuthorDaoImpl implements AuthorDao {
     
     private JdbcTemplate jdbcTemplate;
@@ -23,7 +25,8 @@ public class AuthorDaoImpl implements AuthorDao {
             "INSERT INTO authors (id, name, age) VALUES (?, ?, ?)",
             author.getId(),
             author.getName(),
-            author.getAge());
+            author.getAge()
+        );
     }
     
     @Override
@@ -31,7 +34,8 @@ public class AuthorDaoImpl implements AuthorDao {
         List<Author> result = jdbcTemplate.query(
             "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
             new AuthorRowMapper(),
-            authorId);
+            authorId
+        );
         return result.stream()
                      .findFirst();
     }

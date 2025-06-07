@@ -1,5 +1,6 @@
 package com.sobow.demo.dao.impl;
 
+import static com.sobow.demo.TestDataUtil.createTestAuthor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -25,11 +26,7 @@ public class AuthorDaoImplTests {
     @Test
     public void testThatCreateAuthorGeneratesCorrectSql() {
         
-        Author author = Author.builder()
-                              .id(1L)
-                              .name("Steve")
-                              .age(80)
-                              .build();
+        Author author = createTestAuthor();
         
         underTest.create(author);
         /*

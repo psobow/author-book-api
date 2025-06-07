@@ -1,5 +1,6 @@
 package com.sobow.demo.dao.impl;
 
+import static com.sobow.demo.TestDataUtil.createTestBook;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -25,11 +26,7 @@ public class BookDaoImplTests {
     @Test
     public void testThatCreateBookGeneratesCorrectSql() {
         
-        Book book = Book.builder()
-                        .isbn("978-1")
-                        .title("Witcher")
-                        .authorId(1L)
-                        .build();
+        Book book = createTestBook();
         
         underTest.create(book);
         
