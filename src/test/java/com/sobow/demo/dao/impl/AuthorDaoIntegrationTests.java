@@ -1,18 +1,21 @@
 package com.sobow.demo.dao.impl;
 
-import static com.sobow.demo.TestDataUtil.createTestAuthor;
+import static com.sobow.demo.TestDataUtil.createTestAuthorA;
+import static com.sobow.demo.TestDataUtil.createTestAuthorB;
+import static com.sobow.demo.TestDataUtil.createTestAuthorC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.sobow.demo.domain.Author;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorDaoIntegrationTests {
     
     private AuthorDaoImpl underTest;
@@ -24,7 +27,7 @@ public class AuthorDaoIntegrationTests {
     
     @Test
     public void testThatAuthorCanBeCreatedAndRecalled() {
-        Author author = createTestAuthor();
+        Author author = createTestAuthorA();
         
         underTest.create(author);
         Optional<Author> result = underTest.findOne(author.getId());
@@ -32,4 +35,20 @@ public class AuthorDaoIntegrationTests {
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(author);
     }
+    
+    @Test
+    public void testThatManyAuthorsCanBeCreatedAndRecalled() {
+        Author authorA = createTestAuthorA();
+        underTest.create(authorA);
+        Author authorB = createTestAuthorB();
+        underTest.create(authorB);
+        Author authorC = createTestAuthorC();
+        underTest.create(authorC);
+        
+        List<Author> result = underTest.findAll();
+        
+        assertThat(result).hasSize(3);
+        assertThat(result).containsExactly(authorA, authorB, authorC);
+    }
+    
 }

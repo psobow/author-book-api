@@ -1,6 +1,6 @@
 package com.sobow.demo.dao.impl;
 
-import static com.sobow.demo.TestDataUtil.createTestAuthor;
+import static com.sobow.demo.TestDataUtil.createTestAuthorA;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -26,7 +26,7 @@ public class AuthorDaoImplTests {
     @Test
     public void testThatCreateAuthorGeneratesCorrectSql() {
         
-        Author author = createTestAuthor();
+        Author author = createTestAuthorA();
         
         underTest.create(author);
         /*
@@ -54,5 +54,14 @@ public class AuthorDaoImplTests {
             eq("SELECT id, name, age FROM authors WHERE id = ? LIMIT 1"),
             any(AuthorRowMapper.class),
             eq(1L));
+    }
+    
+    @Test
+    public void testThatFindAllGeneratesCorrectSql() {
+        underTest.findAll();
+        verify(jdbcTemplate).query(
+            eq("SELECT id, name, age FROM authors"),
+            any(AuthorRowMapper.class)
+        );
     }
 }

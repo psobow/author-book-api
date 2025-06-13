@@ -1,21 +1,23 @@
 package com.sobow.demo.dao.impl;
 
-import static com.sobow.demo.TestDataUtil.createTestAuthor;
-import static com.sobow.demo.TestDataUtil.createTestBook;
+import static com.sobow.demo.TestDataUtil.createTestAuthorA;
+import static com.sobow.demo.TestDataUtil.createTestBookA;
+import static com.sobow.demo.TestDataUtil.createTestBookB;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.sobow.demo.dao.AuthorDao;
 import com.sobow.demo.domain.Author;
 import com.sobow.demo.domain.Book;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class BookDaoIntegrationTests {
     
     private AuthorDao authorDao;
@@ -29,8 +31,8 @@ public class BookDaoIntegrationTests {
     
     @Test
     public void testThatBookCanBeCreatedAndRecalled() {
-        Author author = createTestAuthor();
-        Book book = createTestBook();
+        Author author = createTestAuthorA();
+        Book book = createTestBookA();
         authorDao.create(author);
         book.setAuthorId(author.getId());
         
@@ -39,5 +41,24 @@ public class BookDaoIntegrationTests {
         
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(book);
+    }
+    
+    @Test
+    public void testThatMultipleBooksCanBeCreatedAndRecalled() {
+        Author author = createTestAuthorA();
+        authorDao.create(author);
+        
+        Book bookA = createTestBookA();
+        bookA.setAuthorId(author.getId());
+        underTest.create(bookA);
+        
+        Book bookB = createTestBookB();
+        bookB.setAuthorId(author.getId());
+        underTest.create(bookB);
+        
+        List<Book> result = underTest.findAll();
+        
+        assertThat(result).hasSize(2)
+                          .containsExactly(bookA, bookB);
     }
 }

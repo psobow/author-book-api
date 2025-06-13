@@ -1,6 +1,6 @@
 package com.sobow.demo.dao.impl;
 
-import static com.sobow.demo.TestDataUtil.createTestBook;
+import static com.sobow.demo.TestDataUtil.createTestBookA;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -26,7 +26,7 @@ public class BookDaoImplTests {
     @Test
     public void testThatCreateBookGeneratesCorrectSql() {
         
-        Book book = createTestBook();
+        Book book = createTestBookA();
         
         underTest.create(book);
         
@@ -45,5 +45,14 @@ public class BookDaoImplTests {
             eq("SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1"),
             any(BookRowMapper.class),
             eq("978-1"));
+    }
+    
+    @Test
+    public void testThatFindAllGeneratesCorrectSql() {
+        underTest.findAll();
+        verify(jdbcTemplate).query(
+            eq("SELECT isbn, title, author_id FROM books"),
+            any(BookRowMapper.class)
+        );
     }
 }

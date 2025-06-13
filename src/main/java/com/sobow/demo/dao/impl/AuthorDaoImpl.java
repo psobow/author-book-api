@@ -40,6 +40,13 @@ public class AuthorDaoImpl implements AuthorDao {
                      .findFirst();
     }
     
+    @Override
+    public List<Author> findAll() {
+        return jdbcTemplate.query("SELECT id, name, age FROM authors",
+                                  new AuthorRowMapper()
+        );
+    }
+    
     public static class AuthorRowMapper implements RowMapper<Author> {
         
         @Override
