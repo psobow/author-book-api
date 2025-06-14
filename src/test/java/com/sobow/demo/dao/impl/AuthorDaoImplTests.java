@@ -31,8 +31,8 @@ public class AuthorDaoImplTests {
         underTest.create(author);
         /*
             1. We want to verify that specific method of jdbcTemplate is called with specific set of arguments
-            2. We use parameterized query it is safer because JDBC driver will treat parameters as a literal strings, not
-                executable SQL's
+            2. We use parameterized query it is safer because JDBC driver will treat parameters as a literal strings,
+             not executable SQL's
             3.When you're verifying method calls like this, using ArgumentMatchers.eq()
                 You're not executing the method, you are telling mockito:
                 Please verify that this method was called with these specific arguments.
@@ -52,30 +52,25 @@ public class AuthorDaoImplTests {
         
         verify(jdbcTemplate).query(
             eq("SELECT id, name, age FROM authors WHERE id = ? LIMIT 1"),
-            any(AuthorRowMapper.class),
-            eq(1L));
+            any(AuthorRowMapper.class), eq(1L));
     }
     
     @Test
     public void testThatFindAllGeneratesCorrectSql() {
         underTest.findAll();
-        verify(jdbcTemplate).query(
-            eq("SELECT id, name, age FROM authors"),
-            any(AuthorRowMapper.class)
-        );
+        verify(jdbcTemplate).query(eq("SELECT id, name, age FROM authors"), any(AuthorRowMapper.class));
     }
     
     @Test
     public void testThatUpdateGeneratesCorrectSql() {
         Author author = createTestAuthorA();
         underTest.update(author.getId(), author);
-        verify(jdbcTemplate).update(
-            "UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?",
-            1L,
-            "Steve",
-            80,
-            1L
-        );
+        verify(jdbcTemplate).update("UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?", 1L, "Steve", 80, 1L);
     }
     
+    @Test
+    public void testThatDeleteGeneratesCorrectSql() {
+        underTest.delete(1L);
+        verify(jdbcTemplate).update("DELETE FROM authors where id = ?", 1L);
+    }
 }

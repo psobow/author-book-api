@@ -21,30 +21,24 @@ public class AuthorDaoImpl implements AuthorDao {
     
     @Override
     public void create(Author author) {
-        jdbcTemplate.update(
-            "INSERT INTO authors (id, name, age) VALUES (?, ?, ?)",
-            author.getId(),
-            author.getName(),
-            author.getAge()
-        );
+        jdbcTemplate.update("INSERT INTO authors (id, name, age) VALUES (?, ?, ?)",
+                            author.getId(),
+                            author.getName(),
+                            author.getAge());
     }
     
     @Override
     public Optional<Author> findOne(long authorId) {
-        List<Author> result = jdbcTemplate.query(
-            "SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
-            new AuthorRowMapper(),
-            authorId
-        );
+        List<Author> result = jdbcTemplate.query("SELECT id, name, age FROM authors WHERE id = ? LIMIT 1",
+                                                 new AuthorRowMapper(),
+                                                 authorId);
         return result.stream()
                      .findFirst();
     }
     
     @Override
     public List<Author> findAll() {
-        return jdbcTemplate.query("SELECT id, name, age FROM authors",
-                                  new AuthorRowMapper()
-        );
+        return jdbcTemplate.query("SELECT id, name, age FROM authors", new AuthorRowMapper());
     }
     
     @Override
@@ -52,9 +46,12 @@ public class AuthorDaoImpl implements AuthorDao {
         jdbcTemplate.update("UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?",
                             author.getId(),
                             author.getName(),
-                            author.getAge(),
-                            id
-        );
+                            author.getAge(), id);
+    }
+    
+    @Override
+    public void delete(long id) {
+        jdbcTemplate.update("DELETE FROM authors where id = ?", id);
     }
     
     public static class AuthorRowMapper implements RowMapper<Author> {

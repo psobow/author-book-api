@@ -30,42 +30,40 @@ public class BookDaoImplTests {
         
         underTest.create(book);
         
-        verify(jdbcTemplate).update(
-            eq("INSERT INTO books (isbn, title, author_id) VALUES (?, ?, ?)"),
-            eq("978-1"),
-            eq("Witcher"),
-            eq(1L)
-        );
+        verify(jdbcTemplate).update(eq("INSERT INTO books (isbn, title, author_id) VALUES (?, ?, ?)"),
+                                    eq("978-1"),
+                                    eq("Witcher"),
+                                    eq(1L));
     }
     
     @Test
     public void testThatFindOneGeneratesCorrectSql() {
         underTest.findOne("978-1");
-        verify(jdbcTemplate).query(
-            eq("SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1"),
-            any(BookRowMapper.class),
-            eq("978-1"));
+        verify(jdbcTemplate).query(eq("SELECT isbn, title, author_id FROM books WHERE isbn = ? LIMIT 1"),
+                                   any(BookRowMapper.class),
+                                   eq("978-1"));
     }
     
     @Test
     public void testThatFindAllGeneratesCorrectSql() {
         underTest.findAll();
-        verify(jdbcTemplate).query(
-            eq("SELECT isbn, title, author_id FROM books"),
-            any(BookRowMapper.class)
-        );
+        verify(jdbcTemplate).query(eq("SELECT isbn, title, author_id FROM books"), any(BookRowMapper.class));
     }
     
     @Test
     public void testThatUpdateGeneratesCorrectSql() {
         Book book = createTestBookA();
         underTest.update("978-1", book);
-        verify(jdbcTemplate).update(
-            "UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
-            "978-1",
-            "Witcher",
-            1L,
-            "978-1"
-        );
+        verify(jdbcTemplate).update("UPDATE books SET isbn = ?, title = ?, author_id = ? WHERE isbn = ?",
+                                    "978-1",
+                                    "Witcher",
+                                    1L,
+                                    "978-1");
+    }
+    
+    @Test
+    public void testThatDeleteGeneratesCorrectSql() {
+        underTest.delete("978-1");
+        verify(jdbcTemplate).update("DELETE FROM books where isbn = ?", "978-1");
     }
 }
