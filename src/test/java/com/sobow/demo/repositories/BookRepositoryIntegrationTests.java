@@ -2,6 +2,7 @@ package com.sobow.demo.repositories;
 
 import static com.sobow.demo.TestDataUtil.createTestAuthorA;
 import static com.sobow.demo.TestDataUtil.createTestBookA;
+import static com.sobow.demo.TestDataUtil.createTestBookB;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.sobow.demo.domain.Author;
@@ -35,24 +36,18 @@ public class BookRepositoryIntegrationTests {
         assertThat(result).isPresent();
     }
 
-//    @Test
-//    public void testThatMultipleBooksCanBeCreatedAndRecalled() {
-//        Author author = createTestAuthorA();
-//        authorDao.create(author);
-//
-//        Book bookA = createTestBookA();
-//        bookA.setAuthorId(author.getId());
-//        underTest.create(bookA);
-//
-//        Book bookB = createTestBookB();
-//        bookB.setAuthorId(author.getId());
-//        underTest.create(bookB);
-//
-//        List<Book> result = underTest.findAll();
-//
-//        assertThat(result).hasSize(2)
-//                          .containsExactly(bookA, bookB);
-//    }
+    @Test
+    public void testThatMultipleBooksCanBeCreatedAndRecalled() {
+        Author author = createTestAuthorA();
+        Book bookA = createTestBookA(author);
+        underTest.save(bookA);
+        Book bookB = createTestBookB(author);
+        underTest.save(bookB);
+
+        Iterable<Book> result = underTest.findAll();
+
+        assertThat(result).hasSize(2);
+    }
 //
 //    @Test
 //    public void testThatBookCanBeUpdated() {
