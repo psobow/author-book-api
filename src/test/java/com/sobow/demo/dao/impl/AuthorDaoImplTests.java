@@ -64,4 +64,18 @@ public class AuthorDaoImplTests {
             any(AuthorRowMapper.class)
         );
     }
+    
+    @Test
+    public void testThatUpdateGeneratesCorrectSql() {
+        Author author = createTestAuthorA();
+        underTest.update(author.getId(), author);
+        verify(jdbcTemplate).update(
+            "UPDATE authors SET id = ?, name = ?, age = ? WHERE id = ?",
+            1L,
+            "Steve",
+            80,
+            1L
+        );
+    }
+    
 }
