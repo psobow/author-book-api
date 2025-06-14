@@ -16,25 +16,25 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 @SpringBootTest
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorRepositoryIntegrationTests {
-
+    
     private AuthorRepository underTest;
-
+    
     @Autowired
     public AuthorRepositoryIntegrationTests(AuthorRepository underTest) {
         this.underTest = underTest;
     }
-
+    
     @Test
     public void testThatAuthorCanBeCreatedAndRecalled() {
         Author author = createTestAuthorA();
-
+        
         underTest.save(author);
         Optional<Author> result = underTest.findById(author.getId());
-
+        
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(author);
     }
-
+    
     @Test
     public void testThatManyAuthorsCanBeCreatedAndRecalled() {
         Author authorA = createTestAuthorA();
@@ -43,33 +43,33 @@ public class AuthorRepositoryIntegrationTests {
         underTest.save(authorB);
         Author authorC = createTestAuthorC();
         underTest.save(authorC);
-
+        
         Iterable<Author> result = underTest.findAll();
-
+        
         assertThat(result).hasSize(3);
         assertThat(result).containsExactly(authorA, authorB, authorC);
     }
-
+    
     @Test
     public void testThatAuthorCanBeUpdated() {
         Author authorA = createTestAuthorA();
         underTest.save(authorA);
         authorA.setName("UPDATED");
         underTest.save(authorA);
-
+        
         Optional<Author> result = underTest.findById(authorA.getId());
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(authorA);
     }
-//
-//    @Test
-//    public void testThatAuthorCanBeDeleted() {
-//        Author authorA = createTestAuthorA();
-//        underTest.create(authorA);
-//
-//        underTest.delete(authorA.getId());
-//
-//        Optional<Author> result = underTest.findOne(authorA.getId());
-//        assertThat(result).isEmpty();
-//    }
+    
+    @Test
+    public void testThatAuthorCanBeDeleted() {
+        Author authorA = createTestAuthorA();
+        underTest.save(authorA);
+        
+        underTest.deleteById(authorA.getId());
+        
+        Optional<Author> result = underTest.findById(authorA.getId());
+        assertThat(result).isEmpty();
+    }
 }

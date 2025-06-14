@@ -70,19 +70,19 @@ public class BookRepositoryIntegrationTests {
         assertThat(result).isPresent();
         assertThat(result.get()).isEqualTo(bookA);
     }
-//
-//    @Test
-//    public void testThatBookCanBeDeleted() {
-//        Author author = createTestAuthorA();
-//        authorDao.create(author);
-//
-//        Book bookA = createTestBookA();
-//        bookA.setAuthorId(author.getId());
-//        underTest.create(bookA);
-//
-//        underTest.delete(bookA.getIsbn());
-//
-//        Optional<Book> result = underTest.findOne(bookA.getIsbn());
-//        assertThat(result).isEmpty();
-//    }
+    
+    @Test
+    public void testThatBookCanBeDeleted() {
+        Author author = createTestAuthorA();
+        authorRepository.save(author);
+        
+        Book bookA = createTestBookA(author);
+        underTest.save(bookA);
+        
+        underTest.deleteById(bookA.getIsbn());
+        
+        Optional<Book> result = underTest.findById(bookA.getIsbn()); // because of CascadeType.ALL it also removes
+        // author
+        assertThat(result).isEmpty();
+    }
 }
