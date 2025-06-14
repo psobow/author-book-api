@@ -10,7 +10,6 @@ public final class TestDataUtil {
     
     public static Author createTestAuthorA() {
         return Author.builder()
-                     .id(1L)
                      .name("Steve")
                      .age(80)
                      .build();
@@ -18,7 +17,6 @@ public final class TestDataUtil {
     
     public static Author createTestAuthorB() {
         return Author.builder()
-                     .id(2L)
                      .name("Dave")
                      .age(40)
                      .build();
@@ -26,25 +24,24 @@ public final class TestDataUtil {
     
     public static Author createTestAuthorC() {
         return Author.builder()
-                     .id(3L)
                      .name("Bob")
                      .age(30)
                      .build();
     }
     
-    public static Book createTestBookA() {
+    public static Book createTestBookA(Author author) {
         return Book.builder()
                    .isbn("978-1")
                    .title("Witcher")
-                   .authorId(1L)
+                   .author(author)
                    .build();
     }
     
-    public static Book createTestBookB() {
+    public static Book createTestBookB(Author author) {
         return Book.builder()
                    .isbn("978-2")
                    .title("Witcher 2")
-                   .authorId(1L)
+                   .author(author)
                    .build();
     }
 }
