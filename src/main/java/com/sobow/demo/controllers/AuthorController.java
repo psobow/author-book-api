@@ -4,6 +4,8 @@ import com.sobow.demo.domain.Author;
 import com.sobow.demo.domain.dto.AuthorDto;
 import com.sobow.demo.mappers.Mapper;
 import com.sobow.demo.services.AuthorService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,9 +22,9 @@ public class AuthorController {
     }
     
     @PostMapping(path = "/authors")
-    public AuthorDto createAuthor(@RequestBody AuthorDto authorDto) {
+    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         Author author = authorMapper.mapFromDto(authorDto);
         Author savedAuthor = authorService.createAuthor(author);
-        return authorMapper.mapToDto(savedAuthor);
+        return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.CREATED);
     }
 }
