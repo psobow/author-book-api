@@ -72,4 +72,19 @@ public class AuthorRepositoryIntegrationTests {
         Optional<Author> result = underTest.findById(authorA.getId());
         assertThat(result).isEmpty();
     }
+    
+    @Test
+    public void testThatGetAuthorsWithAgeLessThan() {
+        Author authorA = createTestAuthorA();
+        Author authorB = createTestAuthorB();
+        Author authorC = createTestAuthorC();
+        
+        underTest.save(authorA);
+        underTest.save(authorB);
+        underTest.save(authorC);
+        
+        Iterable<Author> result = underTest.ageLessThan(50);
+        
+        assertThat(result).containsExactly(authorB, authorC);
+    }
 }
