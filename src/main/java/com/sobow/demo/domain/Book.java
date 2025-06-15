@@ -1,5 +1,7 @@
 package com.sobow.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,10 +19,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "books")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Book {
     
     @Id
     private String isbn;
+    @JsonProperty("title") // we can set different name for JSON field
     private String title;
     
     @ManyToOne(cascade = CascadeType.ALL)

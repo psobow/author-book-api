@@ -10,7 +10,7 @@ import com.sobow.demo.domain.Book;
 import org.junit.jupiter.api.Test;
 
 public class JacksonTests {
-
+    
     @Test
     public void testThatObjectMapperCanCreateJsonFromObject() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -19,9 +19,11 @@ public class JacksonTests {
         Book book = TestDataUtil.createTestBookA(author);
         
         String result = objectMapper.writeValueAsString(book);
+        System.out.println(result);
+        System.out.println(book);
         
         assertThat(result).isEqualTo(
-            "{\"isbn\":\"978-1\",\"title\":\"Witcher\",\"author\":{\"id\":null,\"name\":\"Steve\",\"age\":80}}");
+            "{\"isbn\":\"978-1\",\"author\":{\"id\":null,\"name\":\"Steve\",\"age\":80}," + "\"title\":\"Witcher\"}");
     }
     
     @Test
@@ -31,9 +33,11 @@ public class JacksonTests {
         
         ObjectMapper objectMapper = new ObjectMapper();
         
-        String json = "{\"isbn\":\"978-1\",\"title\":\"Witcher\",\"author\":{\"id\":null,\"name\":\"Steve\",\"age\":80}}";
+        String json =
+            "{\"foo\":\"bar\",\"isbn\":\"978-1\",\"title\":\"Witcher\",\"author\":{\"id\":null," + "\"name\":\"Steve\","
+                + "\"age\":80}}";
         
-        Book result = objectMapper.readValue(json,Book.class);
+        Book result = objectMapper.readValue(json, Book.class);
         
         assertThat(result).isEqualTo(book);
     }
