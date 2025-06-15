@@ -5,10 +5,12 @@ import com.sobow.demo.domain.dto.AuthorDto;
 import com.sobow.demo.mappers.Mapper;
 import com.sobow.demo.services.AuthorService;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,5 +41,12 @@ public class AuthorController {
                                                .map(authorMapper::mapToDto)
                                                .collect(Collectors.toList());
         return authorDtoList;
+    }
+    
+    @GetMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> findOneAuthor(@PathVariable("id") Long id) {
+        Optional<Author> optionalAuthor = authorService.findOne(id);
+        return optionalAuthor.map(author -> new ResponseEntity<>(authorMapper.mapToDto(author), HttpStatus.OK))
+                             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
