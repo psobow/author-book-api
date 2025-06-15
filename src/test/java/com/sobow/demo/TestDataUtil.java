@@ -2,6 +2,8 @@ package com.sobow.demo;
 
 import com.sobow.demo.domain.Author;
 import com.sobow.demo.domain.Book;
+import com.sobow.demo.domain.dto.AuthorDto;
+import com.sobow.demo.domain.dto.BookDto;
 
 public final class TestDataUtil {
     
@@ -43,5 +45,13 @@ public final class TestDataUtil {
                    .title("Witcher 2")
                    .author(author)
                    .build();
+    }
+    
+    public static BookDto createTestBookDto(AuthorDto author) {
+        return BookDto.builder()
+                      .isbn("978-1")
+                      .title("Witcher")
+                      .author(author)
+                      .build();
     }
 }
