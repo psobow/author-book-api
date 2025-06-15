@@ -2,6 +2,9 @@ package com.sobow.demo.services;
 
 import com.sobow.demo.domain.Book;
 import com.sobow.demo.repositories.BookRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,5 +25,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public boolean isNewBook(String isbn) {
         return !bookRepository.existsById(isbn);
+    }
+    
+    @Override
+    public List<Book> findAll() {
+        return StreamSupport.stream(bookRepository.findAll()
+                                                  .spliterator(), false)
+                            .collect(Collectors.toList());
     }
 }

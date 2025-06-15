@@ -4,9 +4,12 @@ import com.sobow.demo.domain.Book;
 import com.sobow.demo.domain.dto.BookDto;
 import com.sobow.demo.mappers.Mapper;
 import com.sobow.demo.services.BookService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +27,7 @@ public class BookController {
         this.bookService = bookService;
     }
     
-    @PutMapping("/books/{isbn}")
+    @PutMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> createBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto) {
         boolean isNewBook = bookService.isNewBook(isbn);
         
@@ -33,5 +36,14 @@ public class BookController {
         
         HttpStatus status = isNewBook ? HttpStatus.CREATED : HttpStatus.OK;
         return new ResponseEntity<>(bookMapper.mapToDto(savedBook), status);
+    }
+    
+    @GetMapping(path = "/books")
+    public List<BookDto> findAllBooks() {
+        List<Book> books = bookService.findAll();
+        List<BookDto> bookDtoList = books.stream()
+                                         .map(bookMapper::mapToDto)
+                                         .collect(Collectors.toList());
+        return bookDtoList;
     }
 }
