@@ -4,8 +4,11 @@ import com.sobow.demo.domain.Author;
 import com.sobow.demo.domain.dto.AuthorDto;
 import com.sobow.demo.mappers.Mapper;
 import com.sobow.demo.services.AuthorService;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +28,16 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         Author author = authorMapper.mapFromDto(authorDto);
         Author savedAuthor = authorService.createAuthor(author);
-        return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.CREATED);
+        AuthorDto savedAuthorDto = authorMapper.mapToDto(savedAuthor);
+        return new ResponseEntity<>(savedAuthorDto, HttpStatus.CREATED);
+    }
+    
+    @GetMapping(path = "/authors")
+    public List<AuthorDto> findAllAuthors() {
+        List<Author> authors = authorService.findAll();
+        List<AuthorDto> authorDtoList = authors.stream()
+                                               .map(authorMapper::mapToDto)
+                                               .collect(Collectors.toList());
+        return authorDtoList;
     }
 }

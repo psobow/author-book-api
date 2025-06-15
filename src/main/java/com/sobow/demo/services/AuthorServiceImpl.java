@@ -2,10 +2,13 @@ package com.sobow.demo.services;
 
 import com.sobow.demo.domain.Author;
 import com.sobow.demo.repositories.AuthorRepository;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorServiceImpl implements AuthorService{
+public class AuthorServiceImpl implements AuthorService {
     
     private AuthorRepository authorRepository;
     
@@ -16,5 +19,12 @@ public class AuthorServiceImpl implements AuthorService{
     @Override
     public Author createAuthor(Author author) {
         return authorRepository.save(author);
+    }
+    
+    @Override
+    public List<Author> findAll() {
+        return StreamSupport.stream(authorRepository.findAll()
+                                                    .spliterator(), false)
+                            .collect(Collectors.toList());
     }
 }

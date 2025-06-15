@@ -1,8 +1,8 @@
 package com.sobow.demo.mappers;
 
-public interface Mapper<A, B> {
+public interface Mapper<Entity, DTO> {
     
-    B mapToDto(A a);
+    DTO mapToDto(Entity entity);
     
-    A mapFromDto(B b);
+    Entity mapFromDto(DTO dto);
 }
