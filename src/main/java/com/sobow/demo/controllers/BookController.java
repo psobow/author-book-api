@@ -4,10 +4,10 @@ import com.sobow.demo.domain.Book;
 import com.sobow.demo.domain.dto.BookDto;
 import com.sobow.demo.mappers.Mapper;
 import com.sobow.demo.services.BookService;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,12 +42,9 @@ public class BookController {
     }
     
     @GetMapping(path = "/books")
-    public List<BookDto> findAllBooks() {
-        List<Book> books = bookService.findAll();
-        List<BookDto> bookDtoList = books.stream()
-                                         .map(bookMapper::mapToDto)
-                                         .collect(Collectors.toList());
-        return bookDtoList;
+    public Page<BookDto> findAllBooks(Pageable pageable) {
+        Page<Book> books = bookService.findAll(pageable);
+        return books.map(bookMapper::mapToDto);
     }
     
     @GetMapping(path = "/books/{isbn}")

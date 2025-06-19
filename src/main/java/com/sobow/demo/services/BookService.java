@@ -3,6 +3,8 @@ package com.sobow.demo.services;
 import com.sobow.demo.domain.Book;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BookService {
     
@@ -11,6 +13,8 @@ public interface BookService {
     boolean isExists(String isbn);
     
     List<Book> findAll();
+    
+    Page<Book> findAll(Pageable pageable);
     
     Optional<Book> findOne(String isbn);
     

@@ -58,7 +58,7 @@ public class AuthorController {
         boolean isExists = authorService.isExists(id);
         if (!isExists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         
-        authorDto.setId(id); // it's better to call it in service.save()
+        authorDto.setId(id);
         Author savedAuthor = authorService.save(authorMapper.mapFromDto(authorDto));
         return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.OK);
     }
