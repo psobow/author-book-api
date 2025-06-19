@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,5 +54,15 @@ public class BookController {
         Optional<Book> optionalBook = bookService.findOne(isbn);
         return optionalBook.map(book -> new ResponseEntity<>(bookMapper.mapToDto(book), HttpStatus.OK))
                            .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    
+    @PatchMapping(path = "/books/{isbn}")
+    public ResponseEntity<BookDto> partialUpdateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto) {
+        boolean isExists = bookService.isExists(isbn);
+        if (!isExists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        Book book = bookMapper.mapFromDto(bookDto);
+        Book updatedBook = bookService.partialUpdate(isbn, book);
+        return new ResponseEntity<>(bookMapper.mapToDto(updatedBook), HttpStatus.OK);
     }
 }

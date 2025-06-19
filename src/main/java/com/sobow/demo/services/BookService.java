@@ -13,4 +13,6 @@ public interface BookService {
     List<Book> findAll();
     
     Optional<Book> findOne(String isbn);
+    
+    Book partialUpdate(String isbn, Book book);
 }
