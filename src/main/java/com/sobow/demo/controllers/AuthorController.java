@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthorController {
     
-    private AuthorService authorService;
-    private Mapper<Author, AuthorDto> authorMapper;
+    private final AuthorService authorService;
+    private final Mapper<Author, AuthorDto> authorMapper;
     
     public AuthorController(AuthorService authorService, Mapper<Author, AuthorDto> authorMapper) {
         this.authorService = authorService;
@@ -33,17 +33,15 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
         Author author = authorMapper.mapFromDto(authorDto);
         Author savedAuthor = authorService.save(author);
-        AuthorDto savedAuthorDto = authorMapper.mapToDto(savedAuthor);
-        return new ResponseEntity<>(savedAuthorDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.CREATED);
     }
     
     @GetMapping(path = "/authors")
     public List<AuthorDto> findAllAuthors() {
         List<Author> authors = authorService.findAll();
-        List<AuthorDto> authorDtoList = authors.stream()
-                                               .map(authorMapper::mapToDto)
-                                               .collect(Collectors.toList());
-        return authorDtoList;
+        return authors.stream()
+                      .map(authorMapper::mapToDto)
+                      .collect(Collectors.toList());
     }
     
     @GetMapping(path = "/authors/{id}")
@@ -58,7 +56,7 @@ public class AuthorController {
         boolean isExists = authorService.isExists(id);
         if (!isExists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         
-        authorDto.setId(id); // it's better to call it in service.save()
+        authorDto.setId(id);
         Author savedAuthor = authorService.save(authorMapper.mapFromDto(authorDto));
         return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.OK);
     }
@@ -69,8 +67,9 @@ public class AuthorController {
         boolean isExists = authorService.isExists(id);
         if (!isExists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         
+        authorDto.setId(id);
         Author author = authorMapper.mapFromDto(authorDto);
-        Author updatedAuthor = authorService.partialUpdate(id, author);
+        Author updatedAuthor = authorService.partialUpdate(author);
         
         return new ResponseEntity<>(authorMapper.mapToDto(updatedAuthor), HttpStatus.OK);
     }
