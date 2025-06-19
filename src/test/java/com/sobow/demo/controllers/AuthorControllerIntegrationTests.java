@@ -70,7 +70,7 @@ public class AuthorControllerIntegrationTests {
     @Test
     public void testThatFindAllAuthorsReturnsListOfAuthors() throws Exception {
         Author author = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(author);
+        authorService.save(author);
         
         mockMvc.perform(MockMvcRequestBuilders.get("/authors")
                                               .contentType(MediaType.APPLICATION_JSON))
@@ -85,7 +85,7 @@ public class AuthorControllerIntegrationTests {
     @Test
     public void testThatFindOneAuthorReturnsHttpStatus200WhenAuthorExists() throws Exception {
         Author author = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(author);
+        authorService.save(author);
         
         mockMvc.perform(MockMvcRequestBuilders.get("/authors/" + author.getId())
                                               .contentType(MediaType.APPLICATION_JSON))
@@ -105,7 +105,7 @@ public class AuthorControllerIntegrationTests {
     @Test
     public void testThatFindOneAuthorReturnsAuthorWhenExists() throws Exception {
         Author author = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(author);
+        authorService.save(author);
         
         mockMvc.perform(MockMvcRequestBuilders.get("/authors/" + author.getId())
                                               .contentType(MediaType.APPLICATION_JSON))
@@ -115,5 +115,50 @@ public class AuthorControllerIntegrationTests {
                                                .value(author.getName()))
                .andExpect(MockMvcResultMatchers.jsonPath("$.age")
                                                .value(author.getAge()));
+    }
+    
+    @Test
+    public void testThatFullUpdateAuthorReturnsHttpStatus404WhenAuthorNotExists() throws Exception {
+        Author author = TestDataUtil.createTestAuthorA();
+        String authorJson = objectMapper.writeValueAsString(author);
+        
+        mockMvc.perform(MockMvcRequestBuilders.put("/authors/99999")
+                                              .contentType(MediaType.APPLICATION_JSON)
+                                              .content(authorJson))
+               .andExpect(MockMvcResultMatchers.status()
+                                               .isNotFound());
+    }
+    
+    @Test
+    public void testThatFullUpdateAuthorReturnsHttpStatus200WhenAuthorExists() throws Exception {
+        Author author = TestDataUtil.createTestAuthorA();
+        authorService.save(author);
+        String authorJson = objectMapper.writeValueAsString(author);
+        
+        mockMvc.perform(MockMvcRequestBuilders.put("/authors/" + author.getId())
+                                              .contentType(MediaType.APPLICATION_JSON)
+                                              .content(authorJson))
+               .andExpect(MockMvcResultMatchers.status()
+                                               .isOk());
+    }
+    
+    @Test
+    public void testThatFullUpdateUpdatesExistingAuthor() throws Exception {
+        Author author = TestDataUtil.createTestAuthorA();
+        authorService.save(author);
+        
+        Author newAuthor = TestDataUtil.createTestAuthorB();
+        newAuthor.setId(author.getId());
+        String newAuthorJson = objectMapper.writeValueAsString(newAuthor);
+        
+        mockMvc.perform(MockMvcRequestBuilders.put("/authors/" + author.getId())
+                                              .contentType(MediaType.APPLICATION_JSON)
+                                              .content(newAuthorJson))
+               .andExpect(MockMvcResultMatchers.jsonPath("$.id")
+                                               .value(newAuthor.getId()))
+               .andExpect(MockMvcResultMatchers.jsonPath("$.name")
+                                               .value(newAuthor.getName()))
+               .andExpect(MockMvcResultMatchers.jsonPath("$.age")
+                                               .value(newAuthor.getAge()));
     }
 }

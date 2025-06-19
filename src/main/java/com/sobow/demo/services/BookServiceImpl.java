@@ -24,8 +24,8 @@ public class BookServiceImpl implements BookService {
     }
     
     @Override
-    public boolean isNewBook(String isbn) {
-        return !bookRepository.existsById(isbn);
+    public boolean isExists(String isbn) {
+        return bookRepository.existsById(isbn);
     }
     
     @Override

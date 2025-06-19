@@ -30,12 +30,12 @@ public class BookController {
     
     @PutMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> createBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto) {
-        boolean isNewBook = bookService.isNewBook(isbn);
+        boolean isExists = bookService.isExists(isbn);
         
         Book book = bookMapper.mapFromDto(bookDto);
         Book savedBook = bookService.createBook(isbn, book);
         
-        HttpStatus status = isNewBook ? HttpStatus.CREATED : HttpStatus.OK;
+        HttpStatus status = isExists ? HttpStatus.OK : HttpStatus.CREATED;
         return new ResponseEntity<>(bookMapper.mapToDto(savedBook), status);
     }
     

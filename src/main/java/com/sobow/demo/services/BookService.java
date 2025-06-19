@@ -8,7 +8,7 @@ public interface BookService {
     
     Book createBook(String isbn, Book book);
     
-    boolean isNewBook(String isbn);
+    boolean isExists(String isbn);
     
     List<Book> findAll();
     
