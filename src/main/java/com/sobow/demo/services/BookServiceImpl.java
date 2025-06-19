@@ -3,6 +3,7 @@ package com.sobow.demo.services;
 import com.sobow.demo.domain.Book;
 import com.sobow.demo.repositories.BookRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.springframework.stereotype.Service;
@@ -32,5 +33,10 @@ public class BookServiceImpl implements BookService {
         return StreamSupport.stream(bookRepository.findAll()
                                                   .spliterator(), false)
                             .collect(Collectors.toList());
+    }
+    
+    @Override
+    public Optional<Book> findOne(String isbn) {
+        return bookRepository.findById(isbn);
     }
 }

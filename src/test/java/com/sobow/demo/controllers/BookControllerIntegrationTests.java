@@ -78,4 +78,24 @@ public class BookControllerIntegrationTests {
                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title")
                                                .value(book.getTitle()));
     }
+    
+    @Test
+    public void testThatFindOneBookReturnsHttpStatus200WhenBookExists() throws Exception {
+        Book book = TestDataUtil.createTestBookA(null);
+        bookService.createBook(book.getIsbn(), book);
+        
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/" + book.getIsbn())
+                                              .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(MockMvcResultMatchers.status()
+                                               .isOk());
+    }
+    
+    @Test
+    public void testThatFindOneBookReturnsHttpStatus404WhenBookNotExists() throws Exception {
+        
+        mockMvc.perform(MockMvcRequestBuilders.get("/books/978-1")
+                                              .contentType(MediaType.APPLICATION_JSON))
+               .andExpect(MockMvcResultMatchers.status()
+                                               .isNotFound());
+    }
 }

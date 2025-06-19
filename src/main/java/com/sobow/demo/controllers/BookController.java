@@ -5,6 +5,7 @@ import com.sobow.demo.domain.dto.BookDto;
 import com.sobow.demo.mappers.Mapper;
 import com.sobow.demo.services.BookService;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -45,5 +46,12 @@ public class BookController {
                                          .map(bookMapper::mapToDto)
                                          .collect(Collectors.toList());
         return bookDtoList;
+    }
+    
+    @GetMapping(path = "/books/{isbn}")
+    public ResponseEntity<BookDto> findOneBook(@PathVariable("isbn") String isbn) {
+        Optional<Book> optionalBook = bookService.findOne(isbn);
+        return optionalBook.map(book -> new ResponseEntity<>(bookMapper.mapToDto(book), HttpStatus.OK))
+                           .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }
