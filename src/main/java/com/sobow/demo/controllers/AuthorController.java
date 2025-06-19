@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -56,8 +57,20 @@ public class AuthorController {
         boolean isExists = authorService.isExists(id);
         if (!isExists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         
-        authorDto.setId(id);
+        authorDto.setId(id); // it's better to call it in service.save()
         Author savedAuthor = authorService.save(authorMapper.mapFromDto(authorDto));
         return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.OK);
+    }
+    
+    @PatchMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> partialUpdateAuthor(@PathVariable("id") Long id,
+                                                         @RequestBody AuthorDto authorDto) {
+        boolean isExists = authorService.isExists(id);
+        if (!isExists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        Author author = authorMapper.mapFromDto(authorDto);
+        Author updatedAuthor = authorService.partialUpdate(id, author);
+        
+        return new ResponseEntity<>(authorMapper.mapToDto(updatedAuthor), HttpStatus.OK);
     }
 }
