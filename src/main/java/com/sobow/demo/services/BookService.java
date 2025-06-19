@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface BookService {
     
-    Book createBook(String isbn, Book book);
+    Book save(String isbn, Book book);
     
     boolean isExists(String isbn);
     
