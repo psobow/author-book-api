@@ -32,12 +32,12 @@ public class BookController {
     
     @PutMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> createUpdateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto) {
-        boolean isExists = bookService.isExists(isbn);
+        boolean exists = bookService.existsById(isbn);
         
         Book book = bookMapper.mapFromDto(bookDto);
         Book savedBook = bookService.save(isbn, book);
         
-        HttpStatus httpStatus = isExists ? HttpStatus.OK : HttpStatus.CREATED;
+        HttpStatus httpStatus = exists ? HttpStatus.OK : HttpStatus.CREATED;
         return new ResponseEntity<>(bookMapper.mapToDto(savedBook), httpStatus);
     }
     
@@ -56,8 +56,8 @@ public class BookController {
     
     @PatchMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> partialUpdateBook(@PathVariable("isbn") String isbn, @RequestBody BookDto bookDto) {
-        boolean isExists = bookService.isExists(isbn);
-        if (!isExists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        boolean exists = bookService.existsById(isbn);
+        if (!exists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         
         Book book = bookMapper.mapFromDto(bookDto);
         Book updatedBook = bookService.partialUpdate(isbn, book);
