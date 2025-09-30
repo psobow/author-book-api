@@ -1,0 +1,82 @@
+package com.sobow.library.controllers;
+
+import com.sobow.library.domain.Author;
+import com.sobow.library.domain.dto.AuthorDto;
+import com.sobow.library.mappers.Mapper;
+import com.sobow.library.services.AuthorService;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class AuthorController {
+    
+    private final AuthorService authorService;
+    private final Mapper<Author, AuthorDto> authorMapper;
+    
+    public AuthorController(AuthorService authorService, Mapper<Author, AuthorDto> authorMapper) {
+        this.authorService = authorService;
+        this.authorMapper = authorMapper;
+    }
+    
+    @PostMapping(path = "/authors")
+    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto authorDto) {
+        Author author = authorMapper.mapFromDto(authorDto);
+        Author savedAuthor = authorService.save(author);
+        return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.CREATED);
+    }
+    
+    @GetMapping(path = "/authors")
+    public List<AuthorDto> findAllAuthors() {
+        List<Author> authors = authorService.findAll();
+        return authors.stream()
+                      .map(authorMapper::mapToDto)
+                      .collect(Collectors.toList());
+    }
+    
+    @GetMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> findOneAuthor(@PathVariable("id") Long id) {
+        Optional<Author> optionalAuthor = authorService.findOne(id);
+        return optionalAuthor.map(author -> new ResponseEntity<>(authorMapper.mapToDto(author), HttpStatus.OK))
+                             .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+    
+    @PutMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> fullUpdateAuthor(@PathVariable("id") Long id, @RequestBody AuthorDto authorDto) {
+        boolean exists = authorService.existsById(id);
+        if (!exists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        authorDto.setId(id);
+        Author savedAuthor = authorService.save(authorMapper.mapFromDto(authorDto));
+        return new ResponseEntity<>(authorMapper.mapToDto(savedAuthor), HttpStatus.OK);
+    }
+    
+    @PatchMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> partialUpdateAuthor(@PathVariable("id") Long id,
+                                                         @RequestBody AuthorDto authorDto) {
+        boolean exists = authorService.existsById(id);
+        if (!exists) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        
+        authorDto.setId(id);
+        Author author = authorMapper.mapFromDto(authorDto);
+        Author updatedAuthor = authorService.partialUpdate(author);
+        
+        return new ResponseEntity<>(authorMapper.mapToDto(updatedAuthor), HttpStatus.OK);
+    }
+    
+    @DeleteMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDto> deleteAuthor(@PathVariable("id") Long id) {
+        authorService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+}
